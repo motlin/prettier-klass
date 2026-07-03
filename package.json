@@ -1,0 +1,24 @@
+{
+  "name": "prettier-plugin-klass",
+  "version": "0.0.0",
+  "description": "Prettier plugin that formats the Klass DSL",
+  "license": "MIT",
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "build:wasm": "tree-sitter build --wasm --output klass.wasm .",
+    "grammar": "npm run generate && npm run build:wasm",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "web-tree-sitter": "^0.25.10"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.25.10",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

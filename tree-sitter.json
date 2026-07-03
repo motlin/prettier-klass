@@ -1,0 +1,18 @@
+{
+  "grammars": [
+    {
+      "name": "klass",
+      "camelcase": "Klass",
+      "scope": "source.klass",
+      "file-types": ["klass"]
+    }
+  ],
+  "metadata": {
+    "version": "0.0.0",
+    "license": "MIT",
+    "description": "Klass DSL grammar",
+    "links": {
+      "repository": "https://github.com/local/prettier-klass"
+    }
+  }
+}
