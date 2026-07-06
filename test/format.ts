@@ -31,16 +31,24 @@ export function readCorpus(file: string): string {
   return readFileSync(join(corpusDir, file), 'utf8');
 }
 
-/** Count differing lines between two texts (simple line-by-line diff size). */
+/**
+ * Churn between two texts: the number of added + removed lines in a real
+ * line-level diff (via an LCS). Unlike a positional compare, a single
+ * inserted/removed line does not cascade into every following line.
+ */
 export function diffLineCount(a: string, b: string): number {
   const al = a.split('\n');
   const bl = b.split('\n');
-  const max = Math.max(al.length, bl.length);
-  let count = 0;
-  for (let i = 0; i < max; i++) {
-    if (al[i] !== bl[i]) {
-      count++;
+  const n = al.length;
+  const m = bl.length;
+  // LCS length table.
+  const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      lcs[i][j] = al[i] === bl[j] ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
     }
   }
-  return count;
+  const common = lcs[0][0];
+  // Added (in b, not common) + removed (in a, not common).
+  return n - common + (m - common);
 }

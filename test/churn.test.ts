@@ -33,8 +33,11 @@ describe('corpus formatting churn', () => {
           .map(w => `  ${w.diff.toString().padStart(4)}  ${w.file}`)
           .join('\n'),
     );
-    // Ratchet: keep this from regressing. Tighten as the printer improves.
-    expect(totalDiffLines).toBeLessThanOrEqual(6000);
+    // Ratchet: keep this from regressing. The residual is dominated by the
+    // deliberate canonicalizations documented in the README (alignment collapse,
+    // one-clause-per-line headers, optional-marker spacing, orderBy on its own
+    // line, empty-block / brace normalization).
+    expect(totalDiffLines).toBeLessThanOrEqual(2400);
   });
 });
 

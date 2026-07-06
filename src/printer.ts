@@ -122,10 +122,33 @@ function blankLineBetween(prev: KlassNode, next: KlassNode): boolean {
   if (source === '') {
     return false;
   }
-  const gap = source.slice(prev.endIndex, next.startIndex);
+  // If `next` carries leading comments, the author's blank line sits before the
+  // first of those comments, not before next's code. Measure to that point so a
+  // blank line ahead of a leading comment is preserved.
+  const nextStart = leadingCommentStart(next);
+  const gap = source.slice(prev.endIndex, nextStart);
   // A blank line means two or more newlines with only whitespace between them.
   const newlines = gap.split('\n').length - 1;
   return newlines >= 2;
+}
+
+interface WithComments extends KlassNode {
+  comments?: Array<KlassNode & { leading?: boolean }>;
+}
+
+/** Start index of a node, or of its first leading comment if it has one. */
+function leadingCommentStart(node: KlassNode): number {
+  const comments = (node as WithComments).comments;
+  if (comments === undefined) {
+    return node.startIndex;
+  }
+  let earliest = node.startIndex;
+  for (const c of comments) {
+    if (c.leading === true && c.startIndex < earliest) {
+      earliest = c.startIndex;
+    }
+  }
+  return earliest;
 }
 
 /** Module-level handle to the source text of the file currently being printed. */
@@ -307,7 +330,9 @@ const PRINTERS: Record<string, NodePrinter> = {
     return printEndLike(path, print, 'classifierReference');
   },
   relationship(path, print) {
-    return ['relationship ', mapChildByType(path, print, 'criteriaExpression') ?? ''];
+    // The expression starts on the keyword line, so wrap it in one indent level
+    // to put broken continuations two levels beyond `relationship`.
+    return ['relationship ', indent(mapChildByType(path, print, 'criteriaExpression') ?? '')];
   },
 
   // ---- projection ----
@@ -421,10 +446,12 @@ const PRINTERS: Record<string, NodePrinter> = {
   },
   serviceCriteriaDeclaration(path, print) {
     const node = path.node;
+    // The expression starts on the keyword line; wrap in one indent level so
+    // broken continuations land two levels beyond the criteria keyword.
     return [
       text(childOfType(node, 'serviceCriteriaKeyword')),
       ': ',
-      mapChildByType(path, print, 'criteriaExpression') ?? '',
+      indent(mapChildByType(path, print, 'criteriaExpression') ?? ''),
       ';',
     ];
   },
