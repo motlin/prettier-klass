@@ -3,10 +3,23 @@
   "version": "0.0.0",
   "description": "Prettier plugin that formats the Klass DSL",
   "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "klass.wasm"
+  ],
   "scripts": {
     "generate": "tree-sitter generate",
     "build:wasm": "tree-sitter build --wasm --output klass.wasm .",
     "grammar": "npm run generate && npm run build:wasm",
+    "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -17,6 +30,8 @@
     "web-tree-sitter": "^0.25.10"
   },
   "devDependencies": {
+    "@types/node": "^26.1.0",
+    "prettier": "^3.3.0",
     "tree-sitter-cli": "^0.25.10",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
