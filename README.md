@@ -2,9 +2,54 @@
 
 A [Prettier](https://prettier.io/) plugin that formats the **Klass** DSL.
 
-> Status: **B1 checkpoint** — the tree-sitter grammar parses the full corpus.
-> The Prettier printer/plugin (languages/parsers/printers/embed) is **not**
-> implemented yet.
+> Status: **B5 checkpoint** — the plugin formats the whole language (languages,
+> parser, and a Doc printer with comment handling). The markdown `embed` hook
+> and npm publish (B6) are **not** done yet.
+
+## Usage
+
+```sh
+npm install --save-dev prettier prettier-plugin-klass
+npx prettier --plugin=prettier-plugin-klass --write '**/*.klass'
+```
+
+Or in `.prettierrc`:
+
+```json
+{
+  "plugins": ["prettier-plugin-klass"],
+  "overrides": [{ "files": "*.klass", "options": { "tabWidth": 4 } }]
+}
+```
+
+The plugin honors `printWidth`, `tabWidth`, and `useTabs`.
+
+## Formatting style
+
+The 117 hand-written corpus files are the canonical style reference; formatting
+an already-canonical file is close to a no-op (52 of 117 format unchanged; the
+rest change only in the deliberate ways below). Prettier does not do vertical
+alignment, so a few hand-written conventions are canonicalized:
+
+- **Alignment padding collapses to single spaces.** `userId    : String` becomes
+  `userId: String`. This is the largest source of churn (35 corpus files use
+  column alignment) and the one Prettier fundamentally cannot reproduce.
+- **Header clauses go one per line.** `extends` / `implements` / `abstract` /
+  service + classifier modifiers each get their own indented continuation line
+  (the corpus-dominant style: 77 broken vs 12 inline continuation clauses).
+- **Boolean criteria chains break per operator.** Each `&&` / `||` leads its own
+  continuation line, indented two levels beyond the enclosing statement, even
+  when the chain would fit on one line (47 of 73 corpus continuations fit but are
+  still broken). A left-associative run of one operator stays at a single indent.
+- **Empty blocks expand to `{`\n`}`** (28 corpus files vs 7 inline `{}`), and the
+  opening brace always goes on its own line (774 vs 2).
+- **Optional marker has no leading space:** `String?`, not `String ?` (13 vs 4).
+- **`orderBy` on an association end / parameterized property goes on its own
+  indented line** (the dominant style; a couple of files inline it).
+- Comments and commented-out code are emitted verbatim and never reflowed.
+
+Blank lines the author left between members (and before leading comments) are
+preserved; runs of blank lines collapse to one.
 
 ## Architecture
 
@@ -51,10 +96,16 @@ npm run grammar
 npm test
 ```
 
-The B1 checkpoint test (`test/corpus.test.ts`) loads `klass.wasm` via
-`web-tree-sitter`, parses every `.klass` file in `test/corpus/`, and asserts
-zero `ERROR` / `MISSING` nodes. The corpus is a vendored copy of the 117 real
-`.klass` files from the Klass repo (paths flattened, `/` → `_`).
+The corpus is a vendored copy of the 117 real `.klass` files from the Klass repo
+(paths flattened, `/` → `_`). The suites are:
+
+- `test/corpus.test.ts` — every corpus file parses via `web-tree-sitter` with
+  zero `ERROR` / `MISSING` nodes (the B1 grammar check).
+- `test/churn.test.ts` — formats every corpus file and asserts total churn
+  (added + removed lines vs the hand-written original) stays under a ratchet,
+  plus `format(format(x)) === format(x)` idempotency for all 117.
+- `test/roundtrip.test.ts` — every formatted file reparses with zero errors.
+- `test/snapshot.test.ts` — exact-output snapshots for representative files.
 
 ## Grammar port notes
 
