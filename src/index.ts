@@ -11,6 +11,10 @@ export const languages: SupportLanguage[] = [
     name: 'Klass',
     parsers: ['klass'],
     extensions: ['.klass'],
+    // Aliases let Prettier's markdown printer resolve ```klass fences to this
+    // parser (it matches the fence info string against name/aliases/extensions),
+    // so embedded klass blocks are formatted automatically.
+    aliases: ['klass'],
     vscodeLanguageIds: ['klass'],
   },
 ];

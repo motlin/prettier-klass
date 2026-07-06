@@ -36,8 +36,11 @@ module.exports = grammar({
   ],
 
   rules: {
+    // The package declaration is optional so that the formatter can also parse
+    // package-less snippets, e.g. the ```klass fenced blocks embedded in the
+    // Klass docs (most omit `package`). Full files always start with one.
     compilationUnit: $ => seq(
-      $.packageDeclaration,
+      optional($.packageDeclaration),
       repeat($.topLevelDeclaration),
     ),
 
