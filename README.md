@@ -1,19 +1,24 @@
 # prettier-plugin-klass
 
-A [Prettier](https://prettier.io/) plugin that formats the **Klass** DSL.
+A [Prettier](https://prettier.io/) plugin that formats the **Klass** DSL — both
+standalone `.klass` files and ` ```klass ` fenced code blocks embedded in
+Markdown.
 
-> Status: **B5 checkpoint** — the plugin formats the whole language (languages,
-> parser, and a Doc printer with comment handling). The markdown `embed` hook
-> and npm publish (B6) are **not** done yet.
-
-## Usage
+## Install
 
 ```sh
 npm install --save-dev prettier prettier-plugin-klass
+```
+
+## Usage
+
+Format `.klass` files directly:
+
+```sh
 npx prettier --plugin=prettier-plugin-klass --write '**/*.klass'
 ```
 
-Or in `.prettierrc`:
+Or register it in `.prettierrc` so `prettier` picks it up automatically:
 
 ```json
 {
@@ -23,6 +28,20 @@ Or in `.prettierrc`:
 ```
 
 The plugin honors `printWidth`, `tabWidth`, and `useTabs`.
+
+### Markdown embed
+
+With the plugin registered, running Prettier over a Markdown file also formats
+any ` ```klass ` fenced code blocks in place — Prettier's Markdown printer
+resolves the fence's `klass` info string to this plugin's parser. Prose and
+non-klass fences (`js`, `json`, …) are left to Prettier's own formatting.
+
+```sh
+npx prettier --plugin=prettier-plugin-klass --write 'docs/**/*.md'
+```
+
+Embedded snippets usually omit the `package` declaration, so the parser accepts
+package-less fragments as well as complete files.
 
 ## Formatting style
 
@@ -64,7 +83,10 @@ grammar.js  ──tree-sitter generate──▶  src/parser.c
                                         klass.wasm
                                             │  loaded via web-tree-sitter
                                             ▼
-                              (future) Prettier Doc printer + embed(markdown)
+                        plain-object AST ──▶ Prettier Doc printer
+                                            │  + comment attachment
+                                            ▼
+                        Markdown embed formats ```klass fences
 ```
 
 The grammar is a hand port of the authoritative ANTLR4 grammar in the Klass
@@ -106,12 +128,18 @@ The corpus is a vendored copy of the 117 real `.klass` files from the Klass repo
   plus `format(format(x)) === format(x)` idempotency for all 117.
 - `test/roundtrip.test.ts` — every formatted file reparses with zero errors.
 - `test/snapshot.test.ts` — exact-output snapshots for representative files.
+- `test/embed.test.ts` — over real Markdown fixtures (vendored from the Klass
+  docs), asserts `klass` fences are formatted while prose and non-klass fences
+  stay byte-identical to plain Prettier, and that the result is idempotent.
 
 ## Grammar port notes
 
 - ANTLR error-recovery alternatives that call `notifyErrorListeners`
   ("Missing semi-colon after ...") are dropped; the terminating `;` is
   required. The corpus is all valid input.
+- The `package` declaration is optional in `compilationUnit` (the ANTLR grammar
+  requires it) so package-less snippets — like the `klass` fences embedded in
+  the docs — also parse and format.
 - The left-recursive `criteriaExpression` is expressed with `prec.left`;
   `&&` binds tighter than `||`, matching ANTLR alternative order.
 - `keywordValidAsIdentifier` is an explicit `choice` of keyword strings plus

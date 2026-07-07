@@ -20,7 +20,7 @@ const PREC = {
   and: 2,
 };
 
-module.exports = grammar({
+export default grammar({
   name: 'klass',
 
   extras: $ => [

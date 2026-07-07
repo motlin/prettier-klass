@@ -1,8 +1,26 @@
 {
   "name": "prettier-plugin-klass",
-  "version": "0.0.0",
-  "description": "Prettier plugin that formats the Klass DSL",
+  "version": "0.1.0",
+  "description": "Prettier plugin that formats the Klass DSL, including ```klass fenced blocks in Markdown",
+  "type": "module",
   "license": "MIT",
+  "author": "Craig Motlin <cmotlin@gmail.com>",
+  "keywords": [
+    "prettier",
+    "prettier-plugin",
+    "klass",
+    "formatter",
+    "tree-sitter",
+    "dsl"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/motlin/prettier-klass.git"
+  },
+  "homepage": "https://github.com/motlin/prettier-klass#readme",
+  "bugs": {
+    "url": "https://github.com/motlin/prettier-klass/issues"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -13,13 +31,19 @@
   },
   "files": [
     "dist",
-    "klass.wasm"
+    "klass.wasm",
+    "README.md",
+    "LICENSE"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "generate": "tree-sitter generate",
     "build:wasm": "tree-sitter build --wasm --output klass.wasm .",
     "grammar": "npm run generate && npm run build:wasm",
     "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest"
   },
