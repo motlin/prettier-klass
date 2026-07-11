@@ -5,14 +5,15 @@ Let's add the service to fetch a question by its id.
 ### Service
 
 ```klass
-service QuestionResource
+service QuestionResource on Question
 {
-    read getById(questionId: Long[1..1] id path): QuestionReadProjection[1]
-    {
-        url      : /question/{questionId: Long[1..1] id};
-        criteria : this.id == questionId;
-        format   : json;
-    }
+    /question/{questionId: Long[1..1]}
+        GET
+        {
+            multiplicity: one;
+            criteria    : this.id == questionId;
+            projection  : QuestionReadProjection;
+        }
 }
 ```
 
