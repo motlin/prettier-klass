@@ -1,0 +1,10 @@
+// Configuration for markdownlint-cli2.
+// Rule definitions live in .markdownlint.jsonc and are auto-merged.
+// Docs: https://github.com/DavidAnson/markdownlint-cli2#configuration
+{
+	"globs": ["**/*.md"],
+	// test/fixtures holds Markdown that is input to the embed formatter under
+	// test, not documentation; README.md is kept as-is per the library's own
+	// conventions (it has an intentional unlabelled ASCII-diagram fence).
+	"ignores": ["**/node_modules/**", ".llm/**", ".claude/**", "dist/**", "CLAUDE.md", "README.md", "test/**"],
+}

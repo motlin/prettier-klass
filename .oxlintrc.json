@@ -1,0 +1,5 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn"],
+  "ignorePatterns": ["dist/**", "grammar.js", "src/tree_sitter/**", "src/parser.c", "src/*.json", "test/corpus/**", "test/__snapshots__/**"]
+}

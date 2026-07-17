@@ -1,0 +1,4 @@
+[tools]
+just = "1.52.0"
+node = "26.3.0"
+pre-commit = "4.6.0"
