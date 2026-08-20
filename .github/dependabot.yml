@@ -12,10 +12,6 @@ updates:
     labels:
       - "dependencies"
     groups:
-      typescript-ecosystem:
-        patterns:
-          - "typescript"
-          - "@types/*"
       testing:
         patterns:
           - "vitest"
@@ -24,10 +20,6 @@ updates:
         patterns:
           - "web-tree-sitter"
           - "tree-sitter-cli"
-      lint:
-        patterns:
-          - "oxlint"
-          - "prettier"
     commit-message:
       prefix: "dependabot"
       include: "scope"
