@@ -63,6 +63,6 @@
     "prettier": "^3.9.6",
     "tree-sitter-cli": "^0.27.0",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   }
 }
