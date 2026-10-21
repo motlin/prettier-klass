@@ -59,7 +59,7 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "markdownlint-cli2": "^0.23.3",
-    "oxlint": "^1.88.0",
+    "oxlint": "^1.89.0",
     "prettier": "^3.9.10",
     "tree-sitter-cli": "^0.27.1",
     "typescript": "^7.0.2",
