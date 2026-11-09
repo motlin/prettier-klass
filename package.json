@@ -54,14 +54,14 @@
     "prettier": "^3.0.0"
   },
   "dependencies": {
-    "web-tree-sitter": "^0.27.1"
+    "web-tree-sitter": "^0.27.2"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "markdownlint-cli2": "^0.24.0",
     "oxlint": "^1.91.0",
     "prettier": "^3.9.10",
-    "tree-sitter-cli": "^0.27.1",
+    "tree-sitter-cli": "^0.27.2",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
   }
