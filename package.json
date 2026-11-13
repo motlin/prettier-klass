@@ -60,7 +60,7 @@
     "@types/node": "^26.6.6",
     "markdownlint-cli2": "^0.24.1",
     "oxlint": "^1.93.0",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.1",
     "tree-sitter-cli": "^0.27.2",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
